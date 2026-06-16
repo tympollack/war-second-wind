@@ -19,6 +19,7 @@ enum Achievement {
   doubleWar,
   tripleWar,
   warMachine,
+  apocalypse,
   // ── Comeback ──────────────────
   secondWindReceiver,
   secondWindVictory,
@@ -26,6 +27,7 @@ enum Achievement {
   // ── Dominance ─────────────────
   domination,
   supremacy,
+  totality,
   // ── Length ────────────────────
   speedDemon,
   marathon,
@@ -50,7 +52,7 @@ const Map<Achievement, AchievementMeta> kAchievementMeta = {
     description: 'Win the very first round',
   ),
   Achievement.firstWar: AchievementMeta(
-    title: 'Trial by Fire', emoji: '⚔️',
+    title: 'Trial by Fire', emoji: 'X',
     description: 'Survive the first War',
   ),
   Achievement.jokerWin: AchievementMeta(
@@ -86,7 +88,7 @@ const Map<Achievement, AchievementMeta> kAchievementMeta = {
     description: 'All four Musk-rank cards are destroyed in war',
   ),
   Achievement.warWinner: AchievementMeta(
-    title: 'Warlord', emoji: '⚔️',
+    title: 'Warlord', emoji: '☒',
     description: 'Win your first War',
   ),
   Achievement.ruthless: AchievementMeta(
@@ -94,16 +96,20 @@ const Map<Achievement, AchievementMeta> kAchievementMeta = {
     description: 'Win a War where the opponent played 0 face-down cards',
   ),
   Achievement.doubleWar: AchievementMeta(
-    title: 'Double Trouble', emoji: '⚔️⚔️',
+    title: 'Double Trouble', emoji: '☒☒',
     description: 'Survive a War-within-a-War',
   ),
   Achievement.tripleWar: AchievementMeta(
-    title: 'Apocalypse', emoji: '🌋',
+    title: 'Turkey', emoji: '☒☒☒',
     description: 'Survive three Wars in a chain',
   ),
   Achievement.warMachine: AchievementMeta(
     title: 'War Machine', emoji: '🤖',
     description: 'Win 5 Wars in a single game',
+  ),
+  Achievement.apocalypse: AchievementMeta(
+    title: 'Apocalypse', emoji: '🌋',
+    description: 'Win 10 Wars in a single game',
   ),
   Achievement.secondWindReceiver: AchievementMeta(
     title: 'Second Wind', emoji: '💨',
@@ -125,13 +131,17 @@ const Map<Achievement, AchievementMeta> kAchievementMeta = {
     title: 'Supremacy', emoji: '👊',
     description: 'Hold 40 or more cards at once',
   ),
+  Achievement.totality: AchievementMeta(
+    title: 'Totality', emoji: '💯',
+    description: 'Hold 50 or more cards at once',
+  ),
   Achievement.speedDemon: AchievementMeta(
     title: 'Speed Demon', emoji: '⚡',
-    description: 'Win the game in under 20 rounds',
+    description: 'Win the game in under 100 rounds',
   ),
   Achievement.marathon: AchievementMeta(
     title: 'Marathon', emoji: '🏃',
-    description: 'Play 100 or more rounds in one game',
+    description: 'Play 250 or more rounds in one game',
   ),
   Achievement.cleanSweep: AchievementMeta(
     title: 'Clean Sweep', emoji: '✨',

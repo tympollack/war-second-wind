@@ -210,16 +210,16 @@ class _PlayerPanel extends StatelessWidget {
                     ),
                     if (isLeading) ...[
                       const SizedBox(width: 6),
-                      _Chip(
+                      const _Chip(
                         text: 'LEADING',
-                        bg: const Color(0xFF16A34A),
+                        bg: Color(0xFF16A34A),
                       ),
                     ],
                     if (gotSecondWind) ...[
                       const SizedBox(width: 5),
-                      _Chip(
+                      const _Chip(
                         text: '💨 SW',
-                        bg: const Color(0xFF0284C7),
+                        bg: Color(0xFF0284C7),
                       ),
                     ],
                   ],
@@ -498,7 +498,7 @@ class _BattleZone extends StatelessWidget {
                       // P2 card (left)
                       Column(
                         children: [
-                          _CardPlayerLabel(text: 'P2'),
+                          const _CardPlayerLabel(text: 'P2'),
                           const SizedBox(height: 4),
                           SlideTransition(
                             position: p2Slide,
@@ -513,7 +513,7 @@ class _BattleZone extends StatelessWidget {
                       // P1 card (right)
                       Column(
                         children: [
-                          _CardPlayerLabel(text: 'P1'),
+                          const _CardPlayerLabel(text: 'P1'),
                           const SizedBox(height: 4),
                           SlideTransition(
                             position: p1Slide,

@@ -38,12 +38,12 @@ class _Title extends StatelessWidget {
     return Column(
       children: [
         const Text(
-          'WAR',
+          'War: Second Wind',
           textAlign: TextAlign.center,
           style: TextStyle(
-            fontSize: 88,
-            fontWeight: FontWeight.w900,
-            letterSpacing: 18,
+            fontSize: 66,
+            fontWeight: FontWeight.w700,
+            letterSpacing: 12,
             color: Color(0xFF1B2B4B),
             height: 1.0,
           ),

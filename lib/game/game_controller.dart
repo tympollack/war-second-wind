@@ -230,16 +230,20 @@ class GameController extends ChangeNotifier {
     }
 
     // Each player places up to 3 cards face-down into the pot.
-    // If they have fewer than 3, they place as many as they can (even 0).
+    // If they have fewer than 3, they place as many as they can leaving one face up.
     // The one with MORE cards always plays 3; comeback mechanic for the underdog.
-    final p1Take = min(3, _p1Deck.length);
-    final p2Take = min(3, _p2Deck.length);
+    final p1Take = min(3, _p1Deck.length - 1);
+    final p2Take = min(3, _p2Deck.length - 1);
     _p1FaceDownCount = p1Take;
     _p2FaceDownCount = p2Take;
     if (p1Take == 0 || p2Take == 0) _anyWarRuthless = true;
 
-    for (int i = 0; i < p1Take; i++) _pot.add(_p1Deck.removeFirst());
-    for (int i = 0; i < p2Take; i++) _pot.add(_p2Deck.removeFirst());
+    for (int i = 0; i < p1Take; i++) {
+      _pot.add(_p1Deck.removeFirst());
+    }
+    for (int i = 0; i < p2Take; i++) {
+      _pot.add(_p2Deck.removeFirst());
+    }
 
     // Keep battle cards set — UI shows the tied cards during warPending
     _phase = GamePhase.warPending;
@@ -294,7 +298,9 @@ class GameController extends ChangeNotifier {
     final loserNum   = isP1Win ? 2 : 1;
 
     final shuffled = List<PlayingCard>.from(_pot)..shuffle();
-    for (final c in shuffled) winnerDeck.add(c);
+    for (final c in shuffled) {
+      winnerDeck.add(c);
+    }
     _pot = [];
 
     // Update max-cards records (after adding pot to winner)
@@ -303,7 +309,11 @@ class GameController extends ChangeNotifier {
 
     // Count war wins
     if (_warDepth > 0) {
-      if (isP1Win) _p1WarsWon++; else _p2WarsWon++;
+      if (isP1Win) {
+        _p1WarsWon++;
+      } else {
+        _p2WarsWon++;
+      }
     }
 
     _checkAchievementsPostAward(isP1Win);
@@ -337,7 +347,9 @@ class GameController extends ChangeNotifier {
   // ── Second Wind ────────────────────────────────────────────────────────────
   void _giveSecondWind(int playerNum) {
     final deck = playerNum == 1 ? _p1Deck : _p2Deck;
-    for (final c in _secondWindDeck) deck.add(c);
+    for (final c in _secondWindDeck) {
+      deck.add(c);
+    }
     _secondWindDeck.clear();
     _secondWindUsed = true;
     _secondWindRecipient = 'Player $playerNum';
@@ -365,7 +377,7 @@ class GameController extends ChangeNotifier {
     _gameWinner = winner;
     _phase = GamePhase.gameOver;
     if (!_secondWindUsed) _unlock(Achievement.cleanSweep);
-    if (_round < 20) _unlock(Achievement.speedDemon);
+    if (_round < 100) _unlock(Achievement.speedDemon);
     if (_secondWindUsed && _secondWindRecipient == winner) {
       _unlock(Achievement.secondWindVictory);
     }
@@ -393,10 +405,9 @@ class GameController extends ChangeNotifier {
   RoundResult _compareCards(PlayingCard a, PlayingCard b) {
     final aLvl = _categoryOf(a);
     final bLvl = _categoryOf(b);
+    if (a.rank == b.rank) return RoundResult.tie;
     if (aLvl != bLvl) return aLvl > bLvl ? RoundResult.p1Wins : RoundResult.p2Wins;
-    if (a.rank > b.rank) return RoundResult.p1Wins;
-    if (b.rank > a.rank) return RoundResult.p2Wins;
-    return RoundResult.tie;
+    return a.rank > b.rank ? RoundResult.p1Wins : RoundResult.p2Wins;
   }
 
   String _buildReason(PlayingCard p1, PlayingCard p2, RoundResult result) {
@@ -464,7 +475,7 @@ class GameController extends ChangeNotifier {
       _unlock(Achievement.cliffhanger);
     }
 
-    if (_round >= 100) _unlock(Achievement.marathon);
+    if (_round >= 250) _unlock(Achievement.marathon);
   }
 
   void _checkAchievementsPostWar() {
@@ -478,10 +489,16 @@ class GameController extends ChangeNotifier {
     if (_warDepth > 0) {
       _unlock(Achievement.warWinner);
       if (_anyWarRuthless) _unlock(Achievement.ruthless);
-      if (p1Won && _p1WarsWon >= 5) _unlock(Achievement.warMachine);
-      if (!p1Won && _p2WarsWon >= 5) _unlock(Achievement.warMachine);
+      final warWins = p1Won ? _p1WarsWon : _p2WarsWon;
+      if (warWins >= 10) {
+        _unlock(Achievement.apocalypse);
+      } else if (warWins >= 5) {
+        _unlock(Achievement.warMachine);
+      }
     }
-    if (_maxP1Cards >= 40 || _maxP2Cards >= 40) {
+    if (_maxP1Cards >= 50 || _maxP2Cards >= 50) {
+      _unlock(Achievement.totality);
+    } else if (_maxP1Cards >= 40 || _maxP2Cards >= 40) {
       _unlock(Achievement.supremacy);
     } else if (_maxP1Cards >= 30 || _maxP2Cards >= 30) {
       _unlock(Achievement.domination);
