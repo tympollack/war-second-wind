@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../game/game_controller.dart';
+import '../theme/app_colors.dart';
 import 'game_screen.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -9,7 +10,7 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF5F6FA),
+      backgroundColor: AppColors.background,
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 28),
@@ -44,7 +45,7 @@ class _Title extends StatelessWidget {
             fontSize: 66,
             fontWeight: FontWeight.w700,
             letterSpacing: 12,
-            color: Color(0xFF1B2B4B),
+            color: AppColors.navy,
             height: 1.0,
           ),
         ),
@@ -56,7 +57,7 @@ class _Title extends StatelessWidget {
             fontSize: 11,
             letterSpacing: 4.5,
             fontWeight: FontWeight.w600,
-            color: const Color(0xFF1B2B4B).withOpacity(0.32),
+            color: AppColors.navy.withOpacity(0.32),
           ),
         ),
       ],
@@ -96,10 +97,10 @@ class _RulesList extends StatelessWidget {
                 width: 36,
                 height: 36,
                 decoration: BoxDecoration(
-                  color: const Color(0xFF1B2B4B).withOpacity(0.07),
+                  color: AppColors.navy.withOpacity(0.07),
                   borderRadius: BorderRadius.circular(10),
                 ),
-                child: Icon(r.$1, size: 18, color: const Color(0xFF1B2B4B)),
+                child: Icon(r.$1, size: 18, color: AppColors.navy),
               ),
               const SizedBox(width: 13),
               Expanded(
@@ -107,7 +108,7 @@ class _RulesList extends StatelessWidget {
                   r.$2,
                   style: const TextStyle(
                     fontSize: 13.5,
-                    color: Color(0xFF2C3E60),
+                    color: AppColors.textDark,
                     fontWeight: FontWeight.w500,
                     height: 1.35,
                   ),
@@ -134,7 +135,7 @@ class _DealButton extends StatelessWidget {
         );
       },
       style: ElevatedButton.styleFrom(
-        backgroundColor: const Color(0xFF1B2B4B),
+        backgroundColor: AppColors.navy,
         foregroundColor: Colors.white,
         padding: const EdgeInsets.symmetric(vertical: 18),
         shape: RoundedRectangleBorder(

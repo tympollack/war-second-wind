@@ -87,10 +87,7 @@ class GameController extends ChangeNotifier {
 
   String get muskLabel {
     if (_muskRank == null || !muskIsActive) return '—';
-    return {
-      2: '2',  3: '3',  4: '4',  5: '5',  6: '6',  7: '7',  8: '8',
-      9: '9', 10: '10', 11: 'J', 12: 'Q', 13: 'K', 14: 'A',
-    }[_muskRank] ?? '—';
+    return PlayingCard.rankLabels[_muskRank] ?? '—';
   }
 
   /// Total cards still in the game (not removed by war).
@@ -199,20 +196,7 @@ class GameController extends ChangeNotifier {
     Future.delayed(const Duration(milliseconds: 700), _resolveRound);
   }
 
-  void _resolveRound() {
-    _maybeSetTrump(_p1BattleCard!, _p2BattleCard!);
-    _lastResult = _compareCards(_p1BattleCard!, _p2BattleCard!);
-    _roundReason = _buildReason(_p1BattleCard!, _p2BattleCard!, _lastResult!);
-
-    // Winner's cards go to pot; tied cards are NOT added (they get removed in _startWar)
-    if (_lastResult != RoundResult.tie) {
-      _pot.addAll([_p1BattleCard!, _p2BattleCard!]);
-    }
-
-    _phase = GamePhase.result;
-    _checkAchievementsPostRound();
-    notifyListeners();
-  }
+  void _resolveRound() => _resolveBattle(GamePhase.result);
 
   // ── War ────────────────────────────────────────────────────────────────────
   void _startWar() {
@@ -252,21 +236,21 @@ class GameController extends ChangeNotifier {
   }
 
   void _flipWarCard() {
-    // Before flipping, check if either player needs Second Wind
-    if (_p1Deck.isEmpty && !_secondWindUsed) {
-      _giveSecondWind(1);
-      // Phase stays warPending; player taps again to flip
-      notifyListeners();
-      return;
+    // Check if either player needs Second Wind or is eliminated
+    for (final (deck, num, opponent) in [
+      (_p1Deck, 1, 'Player 2'),
+      (_p2Deck, 2, 'Player 1'),
+    ]) {
+      if (deck.isEmpty) {
+        if (!_secondWindUsed) {
+          _giveSecondWind(num);
+          notifyListeners();
+          return;
+        }
+        _endGame(opponent);
+        return;
+      }
     }
-    if (_p2Deck.isEmpty && !_secondWindUsed) {
-      _giveSecondWind(2);
-      notifyListeners();
-      return;
-    }
-
-    if (_p1Deck.isEmpty) { _endGame('Player 2'); return; }
-    if (_p2Deck.isEmpty) { _endGame('Player 1'); return; }
 
     _p1BattleCard = _p1Deck.removeFirst();
     _p2BattleCard = _p2Deck.removeFirst();
@@ -276,7 +260,9 @@ class GameController extends ChangeNotifier {
     Future.delayed(const Duration(milliseconds: 700), _resolveWarRound);
   }
 
-  void _resolveWarRound() {
+  void _resolveWarRound() => _resolveBattle(GamePhase.warResult);
+
+  void _resolveBattle(GamePhase resultPhase) {
     _maybeSetTrump(_p1BattleCard!, _p2BattleCard!);
     _lastResult = _compareCards(_p1BattleCard!, _p2BattleCard!);
     _roundReason = _buildReason(_p1BattleCard!, _p2BattleCard!, _lastResult!);
@@ -285,7 +271,7 @@ class GameController extends ChangeNotifier {
       _pot.addAll([_p1BattleCard!, _p2BattleCard!]);
     }
 
-    _phase = GamePhase.warResult;
+    _phase = resultPhase;
     _checkAchievementsPostRound();
     notifyListeners();
   }
@@ -304,8 +290,8 @@ class GameController extends ChangeNotifier {
     _pot = [];
 
     // Update max-cards records (after adding pot to winner)
-    if (_p1Deck.length > _maxP1Cards) _maxP1Cards = _p1Deck.length;
-    if (_p2Deck.length > _maxP2Cards) _maxP2Cards = _p2Deck.length;
+    _maxP1Cards = max(_p1Deck.length, _maxP1Cards);
+    _maxP2Cards = max(_p2Deck.length, _maxP2Cards);
 
     // Count war wins
     if (_warDepth > 0) {
@@ -429,6 +415,29 @@ class GameController extends ChangeNotifier {
     _newlyUnlocked.add(a);
   }
 
+  /// Returns the card-count at round start for whichever player won.
+  int get _winnerStartCount {
+    if (_lastResult == RoundResult.p1Wins) return _p1CountAtRoundStart;
+    if (_lastResult == RoundResult.p2Wins) return _p2CountAtRoundStart;
+    return -1; // tie — not applicable
+  }
+
+  /// Shared pattern: check both-have, or winner-has for a card type.
+  void _checkCardTypeAchievement({
+    required bool p1Has,
+    required bool p2Has,
+    required Achievement bothAchievement,
+    required Achievement winAchievement,
+  }) {
+    if (p1Has && p2Has) {
+      _unlock(bothAchievement);
+    } else if (_lastResult == RoundResult.p1Wins && p1Has) {
+      _unlock(winAchievement);
+    } else if (_lastResult == RoundResult.p2Wins && p2Has) {
+      _unlock(winAchievement);
+    }
+  }
+
   void _checkAchievementsPostRound() {
     final p1 = _p1BattleCard!;
     final p2 = _p2BattleCard!;
@@ -438,24 +447,20 @@ class GameController extends ChangeNotifier {
     }
 
     // Joker achievements
-    if (p1.isJoker && p2.isJoker) {
-      _unlock(Achievement.jokerVsJoker);
-    } else if (_lastResult == RoundResult.p1Wins && p1.isJoker) {
-      _unlock(Achievement.jokerWin);
-    } else if (_lastResult == RoundResult.p2Wins && p2.isJoker) {
-      _unlock(Achievement.jokerWin);
-    }
+    _checkCardTypeAchievement(
+      p1Has: p1.isJoker,
+      p2Has: p2.isJoker,
+      bothAchievement: Achievement.jokerVsJoker,
+      winAchievement: Achievement.jokerWin,
+    );
 
     // Musk achievements
-    final p1Musk = isMuskCard(p1);
-    final p2Musk = isMuskCard(p2);
-    if (p1Musk && p2Musk) {
-      _unlock(Achievement.muskVsMusk);
-    } else if (_lastResult == RoundResult.p1Wins && p1Musk) {
-      _unlock(Achievement.muskWin);
-    } else if (_lastResult == RoundResult.p2Wins && p2Musk) {
-      _unlock(Achievement.muskWin);
-    }
+    _checkCardTypeAchievement(
+      p1Has: isMuskCard(p1),
+      p2Has: isMuskCard(p2),
+      bothAchievement: Achievement.muskVsMusk,
+      winAchievement: Achievement.muskWin,
+    );
 
     // Trump advantage win
     if (_lastResult != RoundResult.tie) {
@@ -468,12 +473,7 @@ class GameController extends ChangeNotifier {
     }
 
     // Cliffhanger: winner had exactly 1 card before this round
-    if (_lastResult == RoundResult.p1Wins && _p1CountAtRoundStart == 1) {
-      _unlock(Achievement.cliffhanger);
-    }
-    if (_lastResult == RoundResult.p2Wins && _p2CountAtRoundStart == 1) {
-      _unlock(Achievement.cliffhanger);
-    }
+    if (_winnerStartCount == 1) _unlock(Achievement.cliffhanger);
 
     if (_round >= 250) _unlock(Achievement.marathon);
   }
@@ -496,11 +496,12 @@ class GameController extends ChangeNotifier {
         _unlock(Achievement.warMachine);
       }
     }
-    if (_maxP1Cards >= 50 || _maxP2Cards >= 50) {
+    final maxCards = max(_maxP1Cards, _maxP2Cards);
+    if (maxCards >= 50) {
       _unlock(Achievement.totality);
-    } else if (_maxP1Cards >= 40 || _maxP2Cards >= 40) {
+    } else if (maxCards >= 40) {
       _unlock(Achievement.supremacy);
-    } else if (_maxP1Cards >= 30 || _maxP2Cards >= 30) {
+    } else if (maxCards >= 30) {
       _unlock(Achievement.domination);
     }
   }
