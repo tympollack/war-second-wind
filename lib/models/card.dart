@@ -54,6 +54,6 @@ class PlayingCard {
     }
     deck.add(PlayingCard.joker(id++)); // id 52
     deck.add(PlayingCard.joker(id++)); // id 53
-    return deck..shuffle(Random());
+    return deck..shuffle(Random.secure());
   }
 }
