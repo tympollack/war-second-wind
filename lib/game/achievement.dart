@@ -148,21 +148,3 @@ const Map<Achievement, AchievementMeta> kAchievementMeta = {
     description: 'Win without needing the Second Wind',
   ),
 };
-
-/// Achievements grouped by display category (used in StatsScreen).
-const Map<String, List<Achievement>> kAchievementCategories = {
-  'Basics':    [Achievement.firstBlood, Achievement.firstWar],
-  'Joker':     [Achievement.jokerWin, Achievement.jokerVsJoker],
-  'Trump':     [Achievement.trumpSetter, Achievement.trumpWin],
-  'Musk':      [Achievement.muskCreator, Achievement.muskWin,
-                Achievement.muskVsMusk, Achievement.muskDestroyer],
-  'War':       [Achievement.warWinner, Achievement.ruthless,
-                Achievement.doubleWar, Achievement.tripleWar,
-                Achievement.warMachine, Achievement.apocalypse],
-  'Comeback':  [Achievement.secondWindReceiver, Achievement.secondWindVictory,
-                Achievement.cliffhanger],
-  'Dominance': [Achievement.domination, Achievement.supremacy,
-                Achievement.totality],
-  'Legacy':    [Achievement.speedDemon, Achievement.marathon,
-                Achievement.cleanSweep],
-};

@@ -4,9 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../game/achievement.dart';
 import '../game/game_controller.dart';
-import '../models/game_record.dart';
-import '../services/auth_service.dart';
-import '../services/firestore_service.dart';
 import '../theme/app_colors.dart';
 import '../widgets/achievement_toast.dart';
 import '../widgets/card_widget.dart';
@@ -31,7 +28,6 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
   GameController? _game;
   final Queue<Achievement> _toastQueue = Queue();
   bool _showingToast = false;
-  bool _gameSaved    = false;
 
   @override
   void initState() {
@@ -71,53 +67,11 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
     if (!mounted) return;
     final game = _game;
     if (game == null) return;
-
-    // Auto-save when game ends (fires once per GameScreen instance)
-    if (game.phase == GamePhase.gameOver && !_gameSaved) {
-      _gameSaved = true;
-      _saveGameRecord(game);
-    }
-
     for (final a in game.newlyUnlocked) {
       _toastQueue.add(a);
     }
     game.clearNewlyUnlocked();
     if (!_showingToast) _showNextToast();
-  }
-
-  Future<void> _saveGameRecord(GameController game) async {
-    try {
-      final auth = context.read<AuthService>();
-      final fs   = context.read<FirestoreService>();
-      if (auth.currentUser == null) return;
-
-      final record = GameRecord(
-        id:                  'game_${DateTime.now().millisecondsSinceEpoch}',
-        userId:              auth.currentUser!.id,
-        player1Name:         auth.currentUser!.displayName,
-        player2Name:         'Player 2',
-        winner:              game.gameWinner == 'Player 1'
-                               ? 'player1'
-                               : game.gameWinner == 'Player 2'
-                                   ? 'player2'
-                                   : null,
-        isOngoing:           false,
-        startedAt:           DateTime.now().subtract(const Duration(minutes: 30)),
-        endedAt:             DateTime.now(),
-        roundsPlayed:        game.round,
-        p1WarsWon:           game.p1WarsWon,
-        p2WarsWon:           game.p2WarsWon,
-        cardsRemoved:        game.cardsRemovedCount,
-        trumpSuit:           game.trumpSuit,
-        muskRank:            game.muskRank,
-        achievements:        game.allUnlocked.map((a) => a.name).toList(),
-        usedSecondWind:      game.secondWindUsed,
-        secondWindRecipient: game.secondWindRecipient,
-      );
-      await fs.saveGameRecord(record);
-    } catch (e) {
-      debugPrint('Failed to save game record: $e');
-    }
   }
 
   void _showNextToast() {
