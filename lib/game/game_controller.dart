@@ -184,7 +184,11 @@ class GameController extends ChangeNotifier {
 
   // ── Round ──────────────────────────────────────────────────────────────────
   void _playRound() {
-    if (_p1Deck.isEmpty || _p2Deck.isEmpty) return;
+    if (_p1Deck.isEmpty || _p2Deck.isEmpty) {
+      final winner = _p2Deck.isEmpty ? 'Player 1' : 'Player 2';
+      _endGame(winner);
+      return;
+    }
     _p1CountAtRoundStart = _p1Deck.length;
     _p2CountAtRoundStart = _p2Deck.length;
     _p1BattleCard = _p1Deck.removeFirst();
@@ -216,8 +220,8 @@ class GameController extends ChangeNotifier {
     // Each player places up to 3 cards face-down into the pot.
     // If they have fewer than 3, they place as many as they can leaving one face up.
     // The one with MORE cards always plays 3; comeback mechanic for the underdog.
-    final p1Take = min(3, _p1Deck.length - 1);
-    final p2Take = min(3, _p2Deck.length - 1);
+    final p1Take = max(0, min(3, _p1Deck.length - 1));
+    final p2Take = max(0, min(3, _p2Deck.length - 1));
     _p1FaceDownCount = p1Take;
     _p2FaceDownCount = p2Take;
     if (p1Take == 0 || p2Take == 0) _anyWarRuthless = true;
@@ -391,8 +395,8 @@ class GameController extends ChangeNotifier {
   RoundResult _compareCards(PlayingCard a, PlayingCard b) {
     final aLvl = _categoryOf(a);
     final bLvl = _categoryOf(b);
-    if (a.rank == b.rank) return RoundResult.tie;
     if (aLvl != bLvl) return aLvl > bLvl ? RoundResult.p1Wins : RoundResult.p2Wins;
+    if (a.rank == b.rank) return RoundResult.tie;
     return a.rank > b.rank ? RoundResult.p1Wins : RoundResult.p2Wins;
   }
 

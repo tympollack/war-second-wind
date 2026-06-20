@@ -5,9 +5,9 @@ import 'game/game_controller.dart';
 import 'screens/home_screen.dart';
 import 'theme/app_colors.dart';
 
-void main() {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+  await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   runApp(
     ChangeNotifierProvider(
       create: (_) => GameController(),
