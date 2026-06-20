@@ -80,12 +80,17 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
     }
     _showingToast = true;
     final achievement = _toastQueue.removeFirst();
+    final overlay = Overlay.maybeOf(context);
+    if (overlay == null) {
+      _showingToast = false;
+      return;
+    }
     late OverlayEntry entry;
     entry = OverlayEntry(
       builder: (_) => AchievementToast(
         achievement: achievement,
         onDismissed: () {
-          entry.remove();
+          if (entry.mounted) entry.remove();
           Future.delayed(
             const Duration(milliseconds: 220),
             _showNextToast,
@@ -93,7 +98,7 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
         },
       ),
     );
-    Overlay.of(context).insert(entry);
+    overlay.insert(entry);
   }
 
   void _handleAdvance(GameController game) {
