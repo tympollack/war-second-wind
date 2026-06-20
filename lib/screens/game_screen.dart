@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../game/achievement.dart';
 import '../game/game_controller.dart';
+import '../theme/app_colors.dart';
 import '../widgets/achievement_toast.dart';
 import '../widgets/card_widget.dart';
 
@@ -119,7 +120,7 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
           return _GameOverScreen(game: game);
         }
         return Scaffold(
-          backgroundColor: const Color(0xFFF5F6FA),
+          backgroundColor: AppColors.background,
           body: SafeArea(
             child: Column(
               children: [
@@ -136,7 +137,7 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                 ),
                 // ── HUD: Trump · Musk · Cards in play ─────────────────────
                 _InfoBar(game: game),
-                Container(height: 1, color: const Color(0xFFE0E6F0)),
+                Container(height: 1, color: AppColors.divider),
                 // ── Battle zone ────────────────────────────────────────────
                 Expanded(
                   child: _BattleZone(
@@ -150,7 +151,7 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                   game: game,
                   onTap: () => _handleAdvance(game),
                 ),
-                Container(height: 1, color: const Color(0xFFE0E6F0)),
+                Container(height: 1, color: AppColors.divider),
                 // ── Player 1 panel ─────────────────────────────────────────
                 _PlayerPanel(
                   label: 'Player 1',
@@ -209,7 +210,7 @@ class _PlayerPanel extends StatelessWidget {
                       style: const TextStyle(
                         fontSize: 13,
                         fontWeight: FontWeight.w700,
-                        color: Color(0xFF1B2B4B),
+                        color: AppColors.navy,
                         letterSpacing: 0.4,
                       ),
                     ),
@@ -217,14 +218,14 @@ class _PlayerPanel extends StatelessWidget {
                       const SizedBox(width: 6),
                       const _Chip(
                         text: 'LEADING',
-                        bg: Color(0xFF16A34A),
+                        bg: AppColors.teal,
                       ),
                     ],
                     if (gotSecondWind) ...[
                       const SizedBox(width: 5),
                       const _Chip(
                         text: '💨 SW',
-                        bg: Color(0xFF0284C7),
+                        bg: AppColors.blue,
                       ),
                     ],
                   ],
@@ -236,10 +237,10 @@ class _PlayerPanel extends StatelessWidget {
                   child: LinearProgressIndicator(
                     value: progress.clamp(0.0, 1.0),
                     minHeight: 5,
-                    backgroundColor: const Color(0xFFDDE3F0),
+                    backgroundColor: AppColors.lightGrey,
                     valueColor: AlwaysStoppedAnimation<Color>(
                       isLeading
-                          ? const Color(0xFF16A34A)
+                          ? AppColors.teal
                           : const Color(0xFF4B6087),
                     ),
                   ),
@@ -249,7 +250,7 @@ class _PlayerPanel extends StatelessWidget {
                   '$cardCount cards',
                   style: const TextStyle(
                     fontSize: 11,
-                    color: Color(0xFF8899BB),
+                    color: AppColors.midGrey,
                     fontWeight: FontWeight.w500,
                   ),
                 ),
@@ -274,10 +275,10 @@ class _MiniDeckPile extends StatelessWidget {
         width: 44,
         height: 61,
         decoration: BoxDecoration(
-          border: Border.all(color: const Color(0xFFCDD5E8), width: 1.5),
+          border: Border.all(color: AppColors.chipGrey, width: 1.5),
           borderRadius: BorderRadius.circular(6),
         ),
-        child: const Icon(Icons.close, size: 14, color: Color(0xFFCDD5E8)),
+        child: const Icon(Icons.close, size: 14, color: AppColors.chipGrey),
       );
     }
     final layers = count.clamp(1, 4);
@@ -287,8 +288,8 @@ class _MiniDeckPile extends StatelessWidget {
       child: Stack(
         children: List.generate(layers, (i) {
           final shade = Color.lerp(
-            const Color(0xFF2D4270),
-            const Color(0xFF1B2B4B),
+            AppColors.darkBlue,
+            AppColors.navy,
             i / layers,
           )!;
           return Positioned(
@@ -369,7 +370,7 @@ class _InfoBar extends StatelessWidget {
     final muskAlive = game.muskIsActive;
 
     return Container(
-      color: const Color(0xFFF5F6FA),
+      color: AppColors.background,
       padding: const EdgeInsets.symmetric(vertical: 7, horizontal: 16),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -378,23 +379,23 @@ class _InfoBar extends StatelessWidget {
             label: 'TRUMP',
             value: game.trumpSuit ?? '—',
             active: trumpSet,
-            activeColor: const Color(0xFFF59E0B),
+            activeColor: AppColors.amber,
             icon: '👑',
           ),
-          Container(width: 1, height: 28, color: const Color(0xFFDDE3F0)),
+          Container(width: 1, height: 28, color: AppColors.lightGrey),
           _InfoPill(
             label: 'MUSK',
             value: game.muskLabel,
             active: muskAlive,
-            activeColor: const Color(0xFF7C3AED),
+            activeColor: AppColors.purple,
             icon: '🔥',
           ),
-          Container(width: 1, height: 28, color: const Color(0xFFDDE3F0)),
+          Container(width: 1, height: 28, color: AppColors.lightGrey),
           _InfoPill(
             label: 'CARDS',
             value: '${game.cardsInPlay}',
             active: true,
-            activeColor: const Color(0xFF1B2B4B),
+            activeColor: AppColors.navy,
             icon: '🃏',
           ),
         ],
@@ -420,11 +421,11 @@ class _InfoPill extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = active ? activeColor : const Color(0xFFB0BCCE);
+    final color = active ? activeColor : AppColors.muted;
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Text(icon, style: TextStyle(fontSize: 13, color: active ? null : const Color(0xFFCDD5E8))),
+        Text(icon, style: TextStyle(fontSize: 13, color: active ? null : AppColors.chipGrey)),
         const SizedBox(width: 5),
         Column(
           mainAxisSize: MainAxisSize.min,
@@ -579,10 +580,10 @@ class _WarBadge extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 4),
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 5),
       decoration: BoxDecoration(
-        color: const Color(0xFFDC2626).withOpacity(0.09),
+        color: AppColors.red.withOpacity(0.09),
         borderRadius: BorderRadius.circular(20),
         border: Border.all(
-          color: const Color(0xFFDC2626).withOpacity(0.22),
+          color: AppColors.red.withOpacity(0.22),
         ),
       ),
       child: Row(
@@ -591,7 +592,7 @@ class _WarBadge extends StatelessWidget {
           const Icon(
             Icons.local_fire_department_rounded,
             size: 13,
-            color: Color(0xFFDC2626),
+            color: AppColors.red,
           ),
           const SizedBox(width: 5),
           Text(
@@ -601,7 +602,7 @@ class _WarBadge extends StatelessWidget {
             style: const TextStyle(
               fontSize: 12,
               fontWeight: FontWeight.w700,
-              color: Color(0xFFDC2626),
+              color: AppColors.red,
               letterSpacing: 0.3,
             ),
           ),
@@ -631,9 +632,9 @@ class _StatusLabel extends StatelessWidget {
   }
 
   (String, Color, FontWeight) _resolve() {
-    const navy = Color(0xFF1B2B4B);
-    const red  = Color(0xFFDC2626);
-    const grey = Color(0xFF8899BB);
+    const navy = AppColors.navy;
+    const red  = AppColors.red;
+    const grey = AppColors.midGrey;
 
     switch (game.phase) {
       case GamePhase.idle:
@@ -674,7 +675,7 @@ class _CardPlayerLabel extends StatelessWidget {
       style: const TextStyle(
         fontSize: 10,
         fontWeight: FontWeight.w700,
-        color: Color(0xFFB0BCCE),
+        color: AppColors.muted,
         letterSpacing: 1,
       ),
     );
@@ -698,7 +699,7 @@ class _CenterIcon extends StatelessWidget {
         width: 42,
         height: 42,
         decoration: const BoxDecoration(
-          color: Color(0xFFDC2626),
+          color: AppColors.red,
           shape: BoxShape.circle,
         ),
         child: const Center(
@@ -711,7 +712,7 @@ class _CenterIcon extends StatelessWidget {
       style: TextStyle(
         fontSize: 14,
         fontWeight: FontWeight.w900,
-        color: Color(0xFFCDD5E8),
+        color: AppColors.chipGrey,
         letterSpacing: 2,
       ),
     );
@@ -738,8 +739,8 @@ class _RoundReason extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
         decoration: BoxDecoration(
           color: isTie
-              ? const Color(0xFFDC2626).withOpacity(0.08)
-              : const Color(0xFF1B2B4B).withOpacity(0.06),
+              ? AppColors.red.withOpacity(0.08)
+              : AppColors.navy.withOpacity(0.06),
           borderRadius: BorderRadius.circular(20),
         ),
         child: Text(
@@ -748,8 +749,8 @@ class _RoundReason extends StatelessWidget {
             fontSize: 12,
             fontWeight: FontWeight.w600,
             color: isTie
-                ? const Color(0xFFDC2626)
-                : const Color(0xFF1B2B4B),
+                ? AppColors.red
+                : AppColors.navy,
           ),
         ),
       ),
@@ -790,7 +791,7 @@ class _WarPileDisplay extends StatelessWidget {
                     width: 34,
                     height: 48,
                     decoration: BoxDecoration(
-                      color: const Color(0xFF1B2B4B),
+                      color: AppColors.navy,
                       borderRadius: BorderRadius.circular(4),
                       boxShadow: const [
                         BoxShadow(
@@ -821,7 +822,7 @@ class _WarPileDisplay extends StatelessWidget {
             style: const TextStyle(
               fontSize: 11,
               fontWeight: FontWeight.w600,
-              color: Color(0xFFDC2626),
+              color: AppColors.red,
               letterSpacing: 0.2,
             ),
           ),
@@ -842,10 +843,10 @@ class _SecondWindBanner extends StatelessWidget {
       margin: const EdgeInsets.fromLTRB(24, 16, 24, 0),
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
       decoration: BoxDecoration(
-        color: const Color(0xFF0284C7).withOpacity(0.10),
+        color: AppColors.blue.withOpacity(0.10),
         borderRadius: BorderRadius.circular(12),
         border:
-            Border.all(color: const Color(0xFF0284C7).withOpacity(0.28)),
+            Border.all(color: AppColors.blue.withOpacity(0.28)),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -859,7 +860,7 @@ class _SecondWindBanner extends StatelessWidget {
               style: const TextStyle(
                 fontSize: 13,
                 fontWeight: FontWeight.w600,
-                color: Color(0xFF0369A1),
+                color: AppColors.blueDeep,
               ),
             ),
           ),
@@ -915,8 +916,8 @@ class _ActionButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final bg = _enabled
-        ? (_isWarAction ? const Color(0xFFDC2626) : const Color(0xFF1B2B4B))
-        : const Color(0xFFCDD5E8);
+        ? (_isWarAction ? AppColors.red : AppColors.navy)
+        : AppColors.chipGrey;
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 11),
@@ -929,7 +930,7 @@ class _ActionButton extends StatelessWidget {
             onPressed: _enabled ? onTap : null,
             style: ElevatedButton.styleFrom(
               backgroundColor: bg,
-              disabledBackgroundColor: const Color(0xFFCDD5E8),
+              disabledBackgroundColor: AppColors.chipGrey,
               foregroundColor: Colors.white,
               disabledForegroundColor: Colors.white.withOpacity(0.55),
               shape: RoundedRectangleBorder(
@@ -962,7 +963,7 @@ class _GameOverScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF1B2B4B),
+      backgroundColor: AppColors.navy,
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 28),
@@ -985,7 +986,7 @@ class _GameOverScreen extends StatelessWidget {
               const Text(
                 'WINS THE WAR',
                 style: TextStyle(
-                  color: Color(0xFF4F6D8A),
+                  color: AppColors.slate,
                   fontSize: 13,
                   fontWeight: FontWeight.w700,
                   letterSpacing: 4,
@@ -1003,7 +1004,7 @@ class _GameOverScreen extends StatelessWidget {
                     fontSize: 9,
                     letterSpacing: 3,
                     fontWeight: FontWeight.w700,
-                    color: Color(0xFF4F6D8A),
+                    color: AppColors.slate,
                   ),
                 ),
                 const SizedBox(height: 10),
@@ -1017,7 +1018,7 @@ class _GameOverScreen extends StatelessWidget {
                   onPressed: () => game.newGame(),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.white,
-                    foregroundColor: const Color(0xFF1B2B4B),
+                    foregroundColor: AppColors.navy,
                     padding: const EdgeInsets.symmetric(vertical: 16),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(14),
@@ -1040,7 +1041,7 @@ class _GameOverScreen extends StatelessWidget {
                 child: const Text(
                   'Back to Home',
                   style: TextStyle(
-                    color: Color(0xFF4F6D8A),
+                    color: AppColors.slate,
                     fontSize: 14,
                     fontWeight: FontWeight.w500,
                   ),
@@ -1095,7 +1096,7 @@ class _Stat extends StatelessWidget {
         Text(
           label,
           style: const TextStyle(
-            color: Color(0xFF4F6D8A),
+            color: AppColors.slate,
             fontSize: 10,
             fontWeight: FontWeight.w600,
             letterSpacing: 0.5,

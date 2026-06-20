@@ -19,22 +19,21 @@ class PlayingCard {
   factory PlayingCard.joker(int id) =>
       PlayingCard._(id: id, suit: '', rank: 15, isJoker: true);
 
-  // ── Display helpers ───────────────────────────────────────
-  String get rankLabel {
-    if (isJoker) return '★';
-    return {
-      2: '2',  3: '3',  4: '4',  5: '5',  6: '6',  7: '7',
-      8: '8',  9: '9', 10: '10', 11: 'J', 12: 'Q', 13: 'K', 14: 'A',
-    }[rank] ?? '?';
-  }
+  // ── Rank maps (shared) ────────────────────────────────────
+  static const rankLabels = {
+    2: '2',  3: '3',  4: '4',  5: '5',  6: '6',  7: '7',
+    8: '8',  9: '9', 10: '10', 11: 'J', 12: 'Q', 13: 'K', 14: 'A',
+  };
 
-  String get rankName {
-    if (isJoker) return 'Joker';
-    return {
-      2: '2',  3: '3',  4: '4',  5: '5',  6: '6',  7: '7',  8: '8',
-      9: '9', 10: '10', 11: 'Jack', 12: 'Queen', 13: 'King', 14: 'Ace',
-    }[rank] ?? 'Unknown';
-  }
+  static const rankNames = {
+    2: '2',  3: '3',  4: '4',  5: '5',  6: '6',  7: '7',  8: '8',
+    9: '9', 10: '10', 11: 'Jack', 12: 'Queen', 13: 'King', 14: 'Ace',
+  };
+
+  // ── Display helpers ───────────────────────────────────────
+  String get rankLabel => isJoker ? '★' : rankLabels[rank]!;
+
+  String get rankName => isJoker ? 'Joker' : rankNames[rank]!;
 
   bool get isRed => suit == '♥' || suit == '♦';
 

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../game/achievement.dart';
+import '../theme/app_colors.dart';
 
 class AchievementToast extends StatefulWidget {
   final Achievement achievement;
@@ -69,7 +70,7 @@ class _AchievementToastState extends State<AchievementToast>
                     horizontal: 14, vertical: 11,
                   ),
                   decoration: BoxDecoration(
-                    color: const Color(0xFF1B2B4B),
+                    color: AppColors.navy,
                     borderRadius: BorderRadius.circular(16),
                     boxShadow: const [
                       BoxShadow(
@@ -110,7 +111,7 @@ class _AchievementToastState extends State<AchievementToast>
                                 fontSize: 9,
                                 letterSpacing: 2.5,
                                 fontWeight: FontWeight.w700,
-                                color: Color(0xFF4F6D8A),
+                                color: AppColors.slate,
                               ),
                             ),
                             const SizedBox(height: 1),
@@ -127,7 +128,7 @@ class _AchievementToastState extends State<AchievementToast>
                               meta.description,
                               style: const TextStyle(
                                 fontSize: 11,
-                                color: Color(0xFF7A90B4),
+                                color: AppColors.greyBlue,
                                 height: 1.3,
                               ),
                             ),

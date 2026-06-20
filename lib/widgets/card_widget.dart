@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import '../models/card.dart';
+import '../theme/app_colors.dart';
+import '../theme/card_dimensions.dart';
 
 // ══════════════════════════════════════════════════════════════════════════════
 // CardFace  — renders a playing card right-side up
@@ -25,22 +27,22 @@ class CardFace extends StatelessWidget {
 
   // ── Derived colours ──────────────────────────────────────────────────────
   Color? get _accentColor {
-    if (winner) return const Color(0xFF22C55E);  // green
-    if (isMusk) return const Color(0xFF7C3AED);  // purple
-    if (isTrump) return const Color(0xFFF59E0B); // amber
+    if (winner) return AppColors.green;
+    if (isMusk) return AppColors.purple;
+    if (isTrump) return AppColors.amber;
     return null;
   }
 
   Color get _inkColor {
-    if (card.isJoker) return const Color(0xFF7C3AED);
-    return card.isRed ? const Color(0xFFDC2626) : const Color(0xFF1A1A2E);
+    if (card.isJoker) return AppColors.purple;
+    return card.isRed ? AppColors.red : AppColors.inkDark;
   }
 
   // ── Build ────────────────────────────────────────────────────────────────
   @override
   Widget build(BuildContext context) {
-    final h      = width * 1.45;
-    final radius = width * 0.1;
+    final h      = CardDimensions.height(width);
+    final radius = CardDimensions.radius(width);
     final accent = _accentColor;
 
     return Stack(
@@ -56,7 +58,7 @@ class CardFace extends StatelessWidget {
             borderRadius: BorderRadius.circular(radius),
             border: accent != null
                 ? Border.all(color: accent, width: 2.5)
-                : Border.all(color: const Color(0xFFE4E8F2), width: 1.0),
+                : Border.all(color: AppColors.border, width: 1.0),
             boxShadow: [
               BoxShadow(
                 color: accent != null
@@ -153,16 +155,16 @@ class _JokerFace extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const color = Color(0xFF7C3AED);
+    const color = AppColors.purple;
     return Container(
       decoration: BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [
-            const Color(0xFF7C3AED).withOpacity(0.06),
+            AppColors.purple.withOpacity(0.06),
             Colors.white,
-            const Color(0xFF7C3AED).withOpacity(0.06),
+            AppColors.purple.withOpacity(0.06),
           ],
         ),
       ),
@@ -244,7 +246,7 @@ class _CardBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bg = isMusk ? const Color(0xFF7C3AED) : const Color(0xFFF59E0B);
+    final bg = isMusk ? AppColors.purple : AppColors.amber;
     return Container(
       width:  22,
       height: 22,
@@ -279,13 +281,13 @@ class CardBack extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final h      = width * 1.45;
-    final radius = width * 0.1;
+    final h      = CardDimensions.height(width);
+    final radius = CardDimensions.radius(width);
     return Container(
       width:  width,
       height: h,
       decoration: BoxDecoration(
-        color: const Color(0xFF1B2B4B),
+        color: AppColors.navy,
         borderRadius: BorderRadius.circular(radius),
         boxShadow: const [
           BoxShadow(
@@ -331,11 +333,11 @@ class CardSlotEmpty extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width:  width,
-      height: width * 1.45,
+      height: CardDimensions.height(width),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(width * 0.1),
+        borderRadius: BorderRadius.circular(CardDimensions.radius(width)),
         border: Border.all(
-          color: const Color(0xFFD8DFF0),
+          color: AppColors.cardBack,
           width: 1.5,
         ),
       ),

@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'game/game_controller.dart';
 import 'screens/home_screen.dart';
+import 'theme/app_colors.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -24,7 +25,7 @@ class WarApp extends StatelessWidget {
       title: 'WAR',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF1B2B4B)),
+        colorScheme: ColorScheme.fromSeed(seedColor: AppColors.navy),
         useMaterial3: true,
       ),
       home: const HomeScreen(),
