@@ -1,5 +1,6 @@
 import 'dart:collection';
 import 'dart:math';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import '../models/card.dart';
 import 'achievement.dart';
@@ -121,6 +122,23 @@ class GameController extends ChangeNotifier {
 
   void clearNewlyUnlocked() {
     _newlyUnlocked.clear();
+  }
+
+  // ── Test-only helpers ────────────────────────────────────────────────────
+  @visibleForTesting
+  void setDecksForTest({
+    required Queue<PlayingCard> p1,
+    required Queue<PlayingCard> p2,
+    required Queue<PlayingCard> secondWind,
+  }) {
+    _p1Deck = p1;
+    _p2Deck = p2;
+    _secondWindDeck = secondWind;
+  }
+
+  @visibleForTesting
+  void forceSecondWindUsedForTest() {
+    _secondWindUsed = true;
   }
 
   // ── Public API ─────────────────────────────────────────────────────────────
