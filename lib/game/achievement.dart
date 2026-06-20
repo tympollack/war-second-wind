@@ -52,7 +52,7 @@ const Map<Achievement, AchievementMeta> kAchievementMeta = {
     description: 'Win the very first round',
   ),
   Achievement.firstWar: AchievementMeta(
-    title: 'Trial by Fire', emoji: 'X',
+    title: 'Trial by Fire', emoji: '⚔️',
     description: 'Survive the first War',
   ),
   Achievement.jokerWin: AchievementMeta(
@@ -88,7 +88,7 @@ const Map<Achievement, AchievementMeta> kAchievementMeta = {
     description: 'All four Musk-rank cards are destroyed in war',
   ),
   Achievement.warWinner: AchievementMeta(
-    title: 'Warlord', emoji: '☒',
+    title: 'Warlord', emoji: '⚔️',
     description: 'Win your first War',
   ),
   Achievement.ruthless: AchievementMeta(
@@ -96,11 +96,11 @@ const Map<Achievement, AchievementMeta> kAchievementMeta = {
     description: 'Win a War where the opponent played 0 face-down cards',
   ),
   Achievement.doubleWar: AchievementMeta(
-    title: 'Double Trouble', emoji: '☒☒',
+    title: 'Double Trouble', emoji: '⚔️⚔️',
     description: 'Survive a War-within-a-War',
   ),
   Achievement.tripleWar: AchievementMeta(
-    title: 'Turkey', emoji: '☒☒☒',
+    title: 'Turkey', emoji: '⚔️⚔️⚔️',
     description: 'Survive three Wars in a chain',
   ),
   Achievement.warMachine: AchievementMeta(

@@ -965,7 +965,8 @@ class _GameOverScreen extends StatelessWidget {
             children: [
               const Spacer(flex: 2),
               // Winner headline
-              const Text('🏆', style: TextStyle(fontSize: 72)),
+              Text(game.gameWinner == 'Draw' ? '🤝' : '🏆',
+                  style: const TextStyle(fontSize: 72)),
               const SizedBox(height: 14),
               Text(
                 game.gameWinner ?? '',
@@ -977,9 +978,9 @@ class _GameOverScreen extends StatelessWidget {
                   letterSpacing: 1,
                 ),
               ),
-              const Text(
-                'WINS THE WAR',
-                style: TextStyle(
+              Text(
+                game.gameWinner == 'Draw' ? 'NO WINNER' : 'WINS THE WAR',
+                style: const TextStyle(
                   color: Color(0xFF4F6D8A),
                   fontSize: 13,
                   fontWeight: FontWeight.w700,

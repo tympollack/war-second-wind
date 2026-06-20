@@ -232,8 +232,8 @@ class GameController extends ChangeNotifier {
     // Each player places up to 3 cards face-down into the pot.
     // If they have fewer than 3, they place as many as they can leaving one face up.
     // The one with MORE cards always plays 3; comeback mechanic for the underdog.
-    final p1Take = min(3, _p1Deck.length - 1);
-    final p2Take = min(3, _p2Deck.length - 1);
+    final p1Take = max(0, min(3, _p1Deck.length - 1));
+    final p2Take = max(0, min(3, _p2Deck.length - 1));
     _p1FaceDownCount = p1Take;
     _p2FaceDownCount = p2Take;
     if (p1Take == 0 || p2Take == 0) _anyWarRuthless = true;
@@ -265,6 +265,7 @@ class GameController extends ChangeNotifier {
       return;
     }
 
+    if (_p1Deck.isEmpty && _p2Deck.isEmpty) { _endGame('Draw'); return; }
     if (_p1Deck.isEmpty) { _endGame('Player 2'); return; }
     if (_p2Deck.isEmpty) { _endGame('Player 1'); return; }
 
@@ -405,7 +406,7 @@ class GameController extends ChangeNotifier {
   RoundResult _compareCards(PlayingCard a, PlayingCard b) {
     final aLvl = _categoryOf(a);
     final bLvl = _categoryOf(b);
-    if (a.rank == b.rank) return RoundResult.tie;
+    if (aLvl == bLvl && a.rank == b.rank) return RoundResult.tie;
     if (aLvl != bLvl) return aLvl > bLvl ? RoundResult.p1Wins : RoundResult.p2Wins;
     return a.rank > b.rank ? RoundResult.p1Wins : RoundResult.p2Wins;
   }
@@ -492,14 +493,18 @@ class GameController extends ChangeNotifier {
       final warWins = p1Won ? _p1WarsWon : _p2WarsWon;
       if (warWins >= 10) {
         _unlock(Achievement.apocalypse);
+        _unlock(Achievement.warMachine);
       } else if (warWins >= 5) {
         _unlock(Achievement.warMachine);
       }
     }
     if (_maxP1Cards >= 50 || _maxP2Cards >= 50) {
       _unlock(Achievement.totality);
+      _unlock(Achievement.supremacy);
+      _unlock(Achievement.domination);
     } else if (_maxP1Cards >= 40 || _maxP2Cards >= 40) {
       _unlock(Achievement.supremacy);
+      _unlock(Achievement.domination);
     } else if (_maxP1Cards >= 30 || _maxP2Cards >= 30) {
       _unlock(Achievement.domination);
     }
