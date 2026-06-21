@@ -38,3 +38,16 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+/web/*
+/windows/*
+pubspec.lock
+*.iml
+.idea/*
+.dart_tool/*
+.metadata
+analysis_options.yaml
+android/*
+ios/*
+linux/*
+macos/*
